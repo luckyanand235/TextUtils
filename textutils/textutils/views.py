@@ -23,6 +23,7 @@ def analyze(request):
 	fullcaps = request.POST.get('fullcaps', 'off')
 	newlineremover = request.POST.get('newlineremover', 'off')
 	extraspaceremover = request.POST.get('extraspaceremover', 'off')
+	wordcounter = request.POST.get('wordcounter', 'off')
 	# check if check box value is on
 	if removepunc == 'on':
 		punctuations = '''!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~'''
@@ -65,6 +66,21 @@ def analyze(request):
 		params = {'purpose' : 'Removed New lines', 'analyzed_text': analyzed}
 	# analyze this text
 		return render(request, 'analyze.html', params)
+	
+	elif wordcounter == 'on':
+		analyzed = 0
+		wordcount = 0
+		for char in djtext:
+			if char == " ":
+				if wordcount > 3:
+					analyzed += 1
+					wordcount = 0
+			wordcount += 1
+
+		params = {'purpose': 'Word Counter', 'analyzed_text': analyzed}
+
+		return render(request, 'analyze.html', params)
+
 	else:
 		return HttpResponse("Error")
 
